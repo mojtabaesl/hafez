@@ -15,7 +15,7 @@ import { printAppInfo } from "./printAppInfo.js";
 
 const account = await selectAccount();
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const browser = await chromium.launch({ headless: env.headlessMode });
+const browser = await chromium.launch({ headless: !env.showBrowserGUI });
 const page = await browser.newPage({
   viewport: { width: env.screenWidth, height: env.screenHeight },
 });
@@ -31,7 +31,7 @@ const { xPosition, yPosition } = await findButBtnPosition(page);
 printAppInfo(account, page);
 
 const tehranTimes = calculateZonedDates(
-  account.targetClock,
+  account.targetTime,
   env.warmupOffset,
   "Asia/Tehran"
 );

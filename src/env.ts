@@ -12,7 +12,7 @@ import type { InferOutput } from "valibot";
 
 const EnvSchema = object({
   checkTimeInterval: number(),
-  headlessMode: boolean(),
+  showBrowserGUI: boolean(),
   screenWidth: number(),
   screenHeight: number(),
   sendButtonClickCount: number(),
@@ -34,7 +34,7 @@ function getEnv(): ENV {
   try {
     const envObject = {
       checkTimeInterval: Number(process.env?.CHECK_TIME_INTERVAL ?? 1),
-      headlessMode: process.env?.HEADLESS_MODE === "true" ? true : false,
+      showBrowserGUI: process.env?.SHOW_BROWSER_GUI === "true" ? true : false,
       screenWidth: Number(process.env?.SCREEN_WIDTH ?? 1920),
       screenHeight: Number(process.env?.SCREEN_HEIGHT ?? 1080),
       sendButtonClickCount: Number(process.env?.SEND_BUTTON_CLICK_COUNT ?? 1),

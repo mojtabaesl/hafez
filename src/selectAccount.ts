@@ -6,7 +6,7 @@ import { env } from "./env.js";
 
 const UserSchema = object({
   name: string(),
-  targetClock: pipe(
+  targetTime: pipe(
     string(),
     regex(
       /^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\.\d{3}$/,
@@ -45,7 +45,7 @@ async function fetchBinData(binID: string, apiKey: string) {
     const binData = await response.json();
     return parse(UsersSchema, binData);
   } catch (error) {
-    console.error("An error occurred");
+    console.error("An error occurred", error);
   }
 }
 
@@ -72,7 +72,7 @@ export async function selectAccount() {
     );
 
     includedUsers.forEach((account, index) =>
-      table.push([index + 1, account.name, account.targetClock])
+      table.push([index + 1, account.name, account.targetTime])
     );
     console.log(table.toString());
 
