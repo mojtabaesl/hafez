@@ -66,7 +66,9 @@ _restore_resolv_conf() {
 }
 ############
 
-read -p "Do you want to use Shecan? (y/n): " use_shecan
+read -p "Do you want to use Shecan? (y/n, default: n) : " use_shecan
+use_shecan="${use_shecan:-n}"
+
 if [[ "$use_shecan" == "y" || "$use_shecan" == "Y" ]]; then
   _title "PREP - Updating $RESOLV_CONF..."
   _backup_resolv_conf
