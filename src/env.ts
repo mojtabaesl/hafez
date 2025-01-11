@@ -16,6 +16,7 @@ const EnvSchema = object({
   screenWidth: number(),
   screenHeight: number(),
   sendButtonClickCount: number(),
+  sendButtonClickDelay: number(),
   warmupOffset: pipe(
     number(),
     custom(
@@ -38,6 +39,7 @@ function getEnv(): ENV {
       screenWidth: Number(process.env?.SCREEN_WIDTH ?? 1920),
       screenHeight: Number(process.env?.SCREEN_HEIGHT ?? 1080),
       sendButtonClickCount: Number(process.env?.SEND_BUTTON_CLICK_COUNT ?? 1),
+      sendButtonClickDelay: Number(process.env?.SEND_BUTTON_CLICK_DELAY ?? 330),
       warmupOffset: Number(process.env.WARMUP_OFFSET ?? 0),
       ApiKey: process.env.API_KEY,
       binID: process.env.BIN_ID,

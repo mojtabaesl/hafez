@@ -67,7 +67,7 @@ page.on("response", async (response) => {
     time.getMilliseconds(),
     "ms"
   );
-  console.log("Remote Response Time : ", gmtToTehran(headers?.date));
+  // console.log("Remote Response Time : ", gmtToTehran(headers?.date));
   // console.log("Response Body        : ", body);
   console.log("\n");
 });
@@ -76,6 +76,10 @@ worker.on("message", async (msg) => {
   if (msg === "click") {
     for (let i = 0; i < env.sendButtonClickCount; i++) {
       await page.mouse.click(xPosition, yPosition);
+      if (env.sendButtonClickCount > 1) {
+        console.log("Clicked ", i + 1, " times");
+        await page.waitForTimeout(env.sendButtonClickDelay);
+      }
     }
     await page.waitForTimeout(3000);
     await page.screenshot({ path: "screenShots/03-result.jpg" });
