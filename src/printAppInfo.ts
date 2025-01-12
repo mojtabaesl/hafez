@@ -1,7 +1,6 @@
 import { Page } from "playwright";
 import type { User } from "./selectAccount.js";
 import { getTehranDate } from "./utils.js";
-import { env } from "./env.js";
 
 export async function printAppInfo(account: User, page: Page) {
   const transactionValue = await page.textContent("#sendorder_lblTotalPrice");
@@ -21,9 +20,15 @@ export async function printAppInfo(account: User, page: Page) {
     getTehranDate(new Date()),
     account?.targetTime
   );
-  console.log("Warmup Offset           : ", env.warmupOffset);
-  console.log("SendButton Click Count  : ", env.sendButtonClickCount);
-  console.log("Check Time Interval     : ", env.checkTimeInterval);
+  console.log("Warmup Offset           : ", account.userConfig.warmupOffset);
+  console.log(
+    "SendButton Click Count  : ",
+    account.userConfig.sendButtonClickCount
+  );
+  console.log(
+    "SendButton Click Delay  : ",
+    account.userConfig.sendButtonClickDelay
+  );
   console.log("----------------------------------------------------");
   console.log("Everything Is Ready To Get Rich :)");
   console.log("Waiting ...");

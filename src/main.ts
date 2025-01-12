@@ -9,7 +9,7 @@ import { selectCompany } from "./selectCompany.js";
 import { calcQuantity } from "./calcQuantity.js";
 import { findButBtnPosition } from "./findBuyBtnPosition.js";
 import { calculateZonedDates, toSystemDate } from "./getTimes.js";
-import { getTehranTime, gmtToTehran } from "./utils.js";
+import { getTehranTime } from "./utils.js";
 import { selectAccount } from "./selectAccount.js";
 import { printAppInfo } from "./printAppInfo.js";
 
@@ -32,7 +32,7 @@ printAppInfo(account, page);
 
 const tehranTimes = calculateZonedDates(
   account.targetTime,
-  env.warmupOffset,
+  account.userConfig.warmupOffset,
   "Asia/Tehran"
 );
 
@@ -74,11 +74,11 @@ page.on("response", async (response) => {
 
 worker.on("message", async (msg) => {
   if (msg === "click") {
-    for (let i = 0; i < env.sendButtonClickCount; i++) {
+    for (let i = 0; i < account.userConfig.sendButtonClickCount; i++) {
       await page.mouse.click(xPosition, yPosition);
-      if (env.sendButtonClickCount > 1) {
-        console.log("Clicked ", i + 1, " times");
-        await page.waitForTimeout(env.sendButtonClickDelay);
+      console.log("Clicked ", i + 1, " times");
+      if (account.userConfig.sendButtonClickDelay > 0) {
+        await page.waitForTimeout(account.userConfig.sendButtonClickDelay);
       }
     }
     await page.waitForTimeout(3000);
@@ -86,7 +86,7 @@ worker.on("message", async (msg) => {
     console.log("Done!");
     await browser.close();
   } else if (msg === "warmup") {
-    if (env.warmupOffset > 0) {
+    if (account.userConfig.warmupOffset > 0) {
       await page.mouse.click(xPosition, yPosition);
       await page.waitForTimeout(1000);
       await page.screenshot({ path: "screenShots/02-warmup.jpg" });

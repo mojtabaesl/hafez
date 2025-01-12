@@ -1,8 +1,46 @@
 import readline from "node:readline/promises";
-import { pipe, object, parse, string, regex, array, optional } from "valibot";
+import {
+  number,
+  custom,
+  pipe,
+  object,
+  parse,
+  string,
+  regex,
+  array,
+  optional,
+} from "valibot";
 import Table from "cli-table3";
 import type { InferOutput } from "valibot";
 import { env } from "./env.js";
+
+const UserConfigSchema = object({
+  sendButtonClickCount: optional(number()),
+  sendButtonClickDelay: optional(number()),
+  warmupOffset: optional(
+    pipe(
+      number(),
+      custom(
+        (value) =>
+          typeof value === "number" ? value === 0 || value >= 2 : false,
+        "warmupOffset must be 0 or >= 2"
+      )
+    )
+  ),
+});
+
+const SystemConfigSchema = object({
+  sendButtonClickCount: number(),
+  sendButtonClickDelay: number(),
+  warmupOffset: pipe(
+    number(),
+    custom(
+      (value) =>
+        typeof value === "number" ? value === 0 || value >= 2 : false,
+      "warmupOffset must be 0 or >= 2"
+    )
+  ),
+});
 
 const UserSchema = object({
   name: string(),
@@ -15,14 +53,15 @@ const UserSchema = object({
   ),
   username: string(),
   password: string(),
+  userConfig: optional(UserConfigSchema),
 });
 
 const UsersSchema = object({
+  systemConfig: SystemConfigSchema,
   users: array(UserSchema),
   excludes: optional(array(string())),
 });
 
-export type User = InferOutput<typeof UserSchema>;
 export type Users = InferOutput<typeof UsersSchema>;
 
 async function fetchBinData(binID: string, apiKey: string) {
@@ -79,9 +118,29 @@ export async function selectAccount() {
     const accountID = await rl.question("Please enter account ID: ");
     rl.close();
 
-    return includedUsers[Number(accountID) - 1];
+    const account = includedUsers[Number(accountID) - 1];
+    const { userConfig } = account;
+    return {
+      ...account,
+      userConfig: {
+        sendButtonClickCount:
+          userConfig?.sendButtonClickCount === undefined
+            ? users.systemConfig.sendButtonClickCount
+            : userConfig.sendButtonClickCount,
+        sendButtonClickDelay:
+          userConfig?.sendButtonClickDelay === undefined
+            ? users.systemConfig.sendButtonClickDelay
+            : userConfig.sendButtonClickDelay,
+        warmupOffset:
+          userConfig?.warmupOffset === undefined
+            ? users.systemConfig.warmupOffset
+            : userConfig.warmupOffset,
+      },
+    };
   } catch (error) {
     console.log(error);
     process.exit();
   }
 }
+
+export type User = Awaited<ReturnType<typeof selectAccount>>;

@@ -1,5 +1,4 @@
 import {
-  custom,
   object,
   number,
   parse,
@@ -15,16 +14,6 @@ const EnvSchema = object({
   showBrowserGUI: boolean(),
   screenWidth: number(),
   screenHeight: number(),
-  sendButtonClickCount: number(),
-  sendButtonClickDelay: number(),
-  warmupOffset: pipe(
-    number(),
-    custom(
-      (value) =>
-        typeof value === "number" ? value === 0 || value >= 2 : false,
-      "warmupOffset must be 0 or >= 2"
-    )
-  ),
   ApiKey: pipe(string(), nonEmpty("Please enter api key")),
   binID: pipe(string(), nonEmpty("Please enter bin ID")),
 });
@@ -38,9 +27,6 @@ function getEnv(): ENV {
       showBrowserGUI: process.env?.SHOW_BROWSER_GUI === "true" ? true : false,
       screenWidth: Number(process.env?.SCREEN_WIDTH ?? 1920),
       screenHeight: Number(process.env?.SCREEN_HEIGHT ?? 1080),
-      sendButtonClickCount: Number(process.env?.SEND_BUTTON_CLICK_COUNT ?? 1),
-      sendButtonClickDelay: Number(process.env?.SEND_BUTTON_CLICK_DELAY ?? 330),
-      warmupOffset: Number(process.env.WARMUP_OFFSET ?? 0),
       ApiKey: process.env.API_KEY,
       binID: process.env.BIN_ID,
     };

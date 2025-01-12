@@ -66,6 +66,7 @@ _restore_resolv_conf() {
 }
 ############
 
+_print_new_line
 read -p "Do you want to use Shecan? (y/n, default: n) : " use_shecan
 use_shecan="${use_shecan:-n}"
 
